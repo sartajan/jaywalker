@@ -101,7 +101,9 @@ public class Game {
     }
 
     public void update(long elapsed){
-        if(jaywalker.getScreenRect().contains(car.getScreenRect().left,jaywalker.getScreenRect().centerY())& jaywalker.getScreenRect().contains(car.getScreenRect().bottom,jaywalker.getScreenRect().centerX())||jaywalker.getScreenRect().contains(car.getScreenRect().right,jaywalker.getScreenRect().centerY())){
+        if(jaywalker.getScreenRect().top<car.getScreenRect().bottom
+                & (jaywalker.getScreenRect().left<car.getScreenRect().right ||
+                jaywalker.getScreenRect().right>car.getScreenRect().left)){
             state=State.LOST;
         } else{state = State.RUNNING;}
 
@@ -109,34 +111,41 @@ public class Game {
      //       car.update(elapsed);
            // car.update(elapsed);
         if(state==State.LOST){
-            drawText();
+            initObjectPositions();
         }
 
     }
 
     public void draw(long elapsed){
         Canvas canvas = holder.lockCanvas();
+
         if(canvas !=null) {
             canvas.drawColor(Color.WHITE);
-            for (int j =0; j<roadArray.length;j++) {
-                roadArray[j].draw(canvas, System.currentTimeMillis());
+
+            switch (state) {
+
+                case RUNNING:
+                    drawGame(canvas);
+                    break;
+                case LOST:
+                    drawText(canvas);
+                    break;
             }
-            car.draw(canvas, System.currentTimeMillis());
-            jaywalker.draw(canvas, System.currentTimeMillis());
+
             holder.unlockCanvasAndPost(canvas);
-
         }
-
-
     }
 
-    public void drawText(){
-        Canvas canvas = holder.lockCanvas();
-        if (canvas != null){
-            canvas.drawColor(Color.WHITE);
-            canvas.drawText("You Lose", canvas.getWidth()/2, canvas.getHeight()/2,textPaint);
+    private  void drawGame(Canvas canvas){
+        for (int j =0; j<roadArray.length;j++) {
+            roadArray[j].draw(canvas, System.currentTimeMillis());
         }
-        holder.unlockCanvasAndPost(canvas);
+        car.draw(canvas, System.currentTimeMillis());
+        jaywalker.draw(canvas, System.currentTimeMillis());
+    }
+
+    public void drawText(Canvas canvas){
+            canvas.drawText("You Lose", canvas.getWidth()/2, canvas.getHeight()/2,textPaint);
     }
 
     public void onTouchEvent(MotionEvent event){
@@ -146,11 +155,11 @@ public class Game {
             this.touchY = event.getY();
         }
         else {
-            state=State.RUNNING;
+           // state=State.RUNNING;
+
         }
 
     }
-
 
     public float getTouchX() {
         return touchX=event.getX();
@@ -189,4 +198,11 @@ public class Game {
         }
 
     }
+
+    private void initObjectPositions(){
+        car.initPosition3();
+        jaywalker.initPosition();
+        initPosition(roadArray);
+    }
+
 }

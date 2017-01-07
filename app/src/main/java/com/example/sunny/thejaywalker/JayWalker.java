@@ -44,67 +44,54 @@ public class JayWalker extends Sprite {
         super(screenWidth, screenHeight);
     }
 
+    // initialize jaywalker with initPosition
     public void init(Bitmap image) {
         super.init(image);
         initPosition();
 
     }
 
+    //receive reference to car and road objects
     public void passReferences(Road road[], Car car){
           roadArray= new Road[road.length];
         for (int j =0; j<roadArray.length; j++) {
            roadArray[j]=road[j];
-           // Log.d("ST","number of road units are "+j);
         }
         this.car = car;
     }
 
-
+    //update jaywalker object
     public void update(long elapsed,float touchX, float touchY){
 
         x = getX();
         y = getY();
 
+        //get screen touch coordinates
         this.touchX = touchX;
-        this.touchY = touchX;
+        this.touchY = touchY;
 
-
+        //getting image rectangle on screen
         Rect imageRectOnScreen = getScreenRect();
+
+        //calculate angle for speed & image turn
+        angle = (atan(abs(touchY-imageRectOnScreen.centerY())/(abs(touchX-imageRectOnScreen.centerX()))));
+
         if (touchY>= imageRectOnScreen.centerY()){
-            angle = (atan(abs(touchY-imageRectOnScreen.centerY())/(abs(touchX-imageRectOnScreen.centerX()))));
+        //  angle = (atan(abs(touchY-imageRectOnScreen.centerY())/(abs(touchX-imageRectOnScreen.centerX()))));
             speedY = 0;
             speedX = (float)(speedMax*(cos(angle)));
-            angle = toDegrees(angle);
-            Log.d("ST","The angle is "+angle);
+
             if (touchX>imageRectOnScreen.centerX()){
-                quadrant = 2;
-          //      rotate((float)angle, 2);
-                Log.d("ST","Quadrant 2");
-            }else{
-                quadrant = 3;
-             //   rotate((float)angle,4);
-                Log.d("ST","Quadrant 3");
-            }
+                quadrant = 4;} else { quadrant = 3;}
 
         } else{
-            angle = (atan(abs(touchY-imageRectOnScreen.centerY())/(abs(touchX-imageRectOnScreen.centerX()))));
+        //  angle = (atan(abs(touchY-imageRectOnScreen.centerY())/(abs(touchX-imageRectOnScreen.centerX()))));
             speedY = (float)(speedMax*(sin(angle)));
             speedX = (float)(speedMax*(cos(angle)));
             angle = toDegrees(angle);
-            Log.d("ST","The angle is "+angle);
             if (touchX>imageRectOnScreen.centerX()){
-                quadrant = 1;
-             //   rotate((float)angle, 1);
-                Log.d("ST","Quadrant 1");
-            }else{
-                quadrant = 4;
-              //  rotate((float)angle,4);
-                Log.d("ST","Quadrant 4");
-            }
+                quadrant = 1; } else { quadrant = 2; }
         }
-     //   Log.d("ST","In the JayWalker loop and Speed Y is "+speedY);
-    //    Log.d("ST","In the JayWalker loop Speed X is "+speedX);
-
 
         if (touchX < imageRectOnScreen.centerX()){
             for (int k = 0; k<roadArray.length;k++) {
@@ -135,8 +122,12 @@ public class JayWalker extends Sprite {
 
     public void moveUp(int imageRectOnScreenY,long elapsed, float y){
         if(imageRectOnScreenY>(getScreenHeight()/2)){
-         //   speedY =0;
+
+            dirY = 1;
+            Log.d("ST","amount to be subtracted: "+elapsed*speedY*dirY);
             y -=elapsed*speedY*dirY;
+            Log.d("ST","Image Y on screen JayWalker: "+imageRectOnScreenY);
+            Log.d("ST","Speed Y "+speedY);
         //    Log.d("ST","Y value being set is "+y);
             setY(y);
         } else {
@@ -154,7 +145,7 @@ public class JayWalker extends Sprite {
     public void draw(Canvas canvas, long systemCurrentTime) {
         if (systemCurrentTime >= frameticker + frameperiod) {
             frameticker = systemCurrentTime;
-            Log.d("ST", "Angle " + angle);
+           // Log.d("ST", "Angle " + angle);
             flipped = flip();
             //    flipped = rotate((float)angle, quadrant);
             super.init(flipped);

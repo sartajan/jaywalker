@@ -34,9 +34,9 @@ public class Road extends Sprite {
 
         currentX = getX();
         if (currentX<(getScreenWidth() - (3*(getRect().width())))) {
-            Log.d("ST","The unit's LEFT edge's position is "+currentX);
+        //    Log.d("ST","The unit's LEFT edge's position is "+currentX);
             updatePosition();
-            Log.d("ST","The unit's new LEFT edge's position is "+currentX);
+         //   Log.d("ST","The unit's new LEFT edge's position is "+currentX);
         }
         dirX = -1;
         currentX += dirX*speedX*elapsed;
@@ -47,9 +47,9 @@ public class Road extends Sprite {
     public void moveRight(float speedX , float elapsed ){
         currentX = getX();
         if (currentX>(getScreenWidth())) {
-            Log.d("ST","The unit's RIGHT edge's position is "+currentX);
+       //     Log.d("ST","The unit's RIGHT edge's position is "+currentX);
             updatePosition();
-            Log.d("ST","The unit's new RIGHT edge's position is "+currentX);
+       //     Log.d("ST","The unit's new RIGHT edge's position is "+currentX);
         }
         dirX = 1;
         currentX += dirX*speedX*elapsed;
@@ -60,9 +60,9 @@ public class Road extends Sprite {
     public void moveDown(float speedY, float elapsed){
         currentY = getY();
         if (currentY>getScreenHeight()) {
-            Log.d("ST","The unit's top edge's position is "+getScreenRect().top);
+      //      Log.d("ST","The unit's top edge's position is "+getScreenRect().top);
             updatePosition();
-            Log.d("ST","The unit's new top edge's position is "+currentY);
+      //      Log.d("ST","The unit's new top edge's position is "+currentY);
         }
         currentY += dirY * speedY * elapsed;
         setY(currentY);
